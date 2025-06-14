@@ -9,12 +9,12 @@ enum State {
 # Variables that are changeable
 @export var player: Player
 @export var sprite: Sprite2D # change for animated sprite
-@export var speed: float = 150.0
-@export var jump: float = -200.0
 
 const GRAVITY: float = 400.0
 const MAX_FALL: float = 800.0
 
+var speed: float = 150.0
+var jump: float = -200.0
 var _jumped: bool = false
 var _current_state: State = State.PLAY
 
