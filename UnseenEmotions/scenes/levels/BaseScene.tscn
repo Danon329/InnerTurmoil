@@ -21,3 +21,5 @@ tile_set = SubResource("TileSet_agu12")
 
 [node name="Player" parent="." instance=ExtResource("2_8e8wr")]
 position = Vector2(34, -25)
+
+[editable path="Player"]
