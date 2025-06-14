@@ -15,10 +15,12 @@ size = Vector2(8, 16)
 collision_layer = 0
 script = ExtResource("1_5uet2")
 
-[node name="EnemyComponent" parent="." node_paths=PackedStringArray("enemy", "sprite", "hit_box") instance=ExtResource("1_xbsex")]
+[node name="EnemyComponent" parent="." node_paths=PackedStringArray("enemy", "sprite", "timer") instance=ExtResource("1_xbsex")]
 enemy = NodePath("..")
 sprite = NodePath("../Sprite2D")
-hit_box = NodePath("../HitBox")
+enemy_type = 1
+timer = NodePath("../StopTimer")
+lives = 10
 speed = 50.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -36,5 +38,8 @@ collision_mask = 4
 shape = SubResource("RectangleShape2D_5uet2")
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
-position = Vector2(9, 0)
+position = Vector2(24, 0)
 target_position = Vector2(0, 30)
+
+[node name="StopTimer" type="Timer" parent="."]
+one_shot = true

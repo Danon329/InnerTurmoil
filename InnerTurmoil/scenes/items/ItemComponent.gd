@@ -24,7 +24,7 @@ func on_area_entered(area: Area2D) -> void:
 			petal_aquired.emit()
 			owner.set_deferred("monitorable", false)
 			owner.set_deferred("monitoring", false)
-			# await tween_petal().finished
+			await tween_petal(Vector2.ZERO).finished
 			owner.queue_free()
 		Type.HEALTH_ITEM:
 			health_item_aquired.emit()

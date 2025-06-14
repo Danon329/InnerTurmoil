@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://djtd3620k7qxf"]
+[gd_scene load_steps=7 format=3 uid="uid://djtd3620k7qxf"]
 
 [ext_resource type="Script" uid="uid://cknorg5rbkti1" path="res://scenes/entities/player/Player.gd" id="1_afppm"]
 [ext_resource type="Texture2D" uid="uid://d1dbga4xo0pte" path="res://assets/placeholders/PlayerPlaceholder.png" id="1_tlaso"]
@@ -12,14 +12,21 @@ height = 14.0
 radius = 3.0
 height = 12.0
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_30dhn"]
+radius = 8.0
+height = 46.0
+
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 0
 collision_mask = 33
 script = ExtResource("1_afppm")
 
-[node name="PlayerComponent" parent="." node_paths=PackedStringArray("player", "sprite") instance=ExtResource("2_n1xdv")]
+[node name="PlayerComponent" parent="." node_paths=PackedStringArray("player", "sprite", "hit_box", "attack_area") instance=ExtResource("2_n1xdv")]
+unique_name_in_owner = true
 player = NodePath("..")
 sprite = NodePath("../Sprite2D")
+hit_box = NodePath("../HitBox")
+attack_area = NodePath("../SwordArea")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_tlaso")
@@ -30,7 +37,7 @@ shape = SubResource("CapsuleShape2D_afppm")
 
 [node name="HitBox" type="Area2D" parent="."]
 collision_layer = 2
-collision_mask = 0
+collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
 position = Vector2(0, 1)
@@ -38,5 +45,13 @@ shape = SubResource("CapsuleShape2D_n1xdv")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(7, 7)
+
+[node name="SwordArea" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 8
+
+[node name="SwordCollision" type="CollisionShape2D" parent="SwordArea"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_30dhn")
 
 [connection signal="area_entered" from="HitBox" to="PlayerComponent" method="_on_hit_box_area_entered"]
