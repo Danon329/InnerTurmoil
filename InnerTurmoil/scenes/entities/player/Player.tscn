@@ -9,24 +9,26 @@ radius = 3.0
 height = 14.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_n1xdv"]
-radius = 3.0
-height = 12.0
+radius = 2.0
+height = 10.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_30dhn"]
 radius = 8.0
-height = 46.0
+height = 22.0
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("player_component")]
 collision_layer = 0
 collision_mask = 33
 script = ExtResource("1_afppm")
+player_component = NodePath("PlayerComponent")
 
-[node name="PlayerComponent" parent="." node_paths=PackedStringArray("player", "sprite", "hit_box", "attack_area") instance=ExtResource("2_n1xdv")]
+[node name="PlayerComponent" parent="." node_paths=PackedStringArray("player", "sprite", "hit_box", "attack_area", "invincibility_timer") instance=ExtResource("2_n1xdv")]
 unique_name_in_owner = true
 player = NodePath("..")
 sprite = NodePath("../Sprite2D")
 hit_box = NodePath("../HitBox")
 attack_area = NodePath("../SwordArea")
+invincibility_timer = NodePath("../InvicibilityTimer")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_tlaso")
@@ -44,14 +46,19 @@ position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_n1xdv")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(7, 7)
+zoom = Vector2(4, 4)
 
 [node name="SwordArea" type="Area2D" parent="."]
+position = Vector2(8, 0)
 collision_layer = 4
 collision_mask = 8
 
 [node name="SwordCollision" type="CollisionShape2D" parent="SwordArea"]
+position = Vector2(-1, 0)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_30dhn")
+
+[node name="InvicibilityTimer" type="Timer" parent="."]
+one_shot = true
 
 [connection signal="area_entered" from="HitBox" to="PlayerComponent" method="_on_hit_box_area_entered"]

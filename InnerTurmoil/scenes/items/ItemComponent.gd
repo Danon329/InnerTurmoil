@@ -1,9 +1,6 @@
 class_name ItemComponent
 extends Node
 
-signal petal_aquired
-signal health_item_aquired
-
 enum Type {
 	PETAL,
 	HEALTH_ITEM
@@ -21,13 +18,13 @@ func _ready() -> void:
 func on_area_entered(area: Area2D) -> void:
 	match type:
 		Type.PETAL:
-			petal_aquired.emit()
+			SignalManager.petal_aquired.emit()
 			owner.set_deferred("monitorable", false)
 			owner.set_deferred("monitoring", false)
 			await tween_petal(Vector2.ZERO).finished
 			owner.queue_free()
 		Type.HEALTH_ITEM:
-			health_item_aquired.emit()
+			SignalManager.health_item_aquired.emit()
 			print("Hello")
 		_:
 			pass

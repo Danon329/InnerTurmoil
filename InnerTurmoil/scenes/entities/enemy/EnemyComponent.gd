@@ -13,8 +13,10 @@ enum Type {
 @export var enemy: Enemy
 @export var sprite: Sprite2D # change sprite to animated
 @export var hit_box: Area2D
-@export var enemy_type: Type
+@export var attack_area: Area2D
 @export var timer: Timer
+@export var enemy_type: Type
+
 
 @export_category("Details")
 @export var lives: int = 3
@@ -26,16 +28,18 @@ enum Type {
 const GRAVITY: float = 400.0
 const MAX_FALL: float = 800.0
 
-var _just_turned: bool = false
 var _timer_going: bool = false
 var _changing_speed: bool = false
+var _delta: float
 
 func _ready() -> void:
 	timer.timeout.connect(on_timer_timeout)
+	attack_area.area_entered.connect(on_attack_area_entered)
 	SignalManager.player_attacked.connect(on_player_attacked)
 
 
 func process_body(delta: float) -> void:
+	_delta = delta
 	match enemy_type:
 		Type.DEFAULT:
 			pass
@@ -77,33 +81,51 @@ func checks_normal() -> void:
 		enemy.ray_cast_2d.position.x = -enemy.ray_cast_2d.position.x
 
 
-func slow_down_tween() -> Tween:
-	var tween: Tween = create_tween()
-	tween.tween_property(enemy, "velocity", Vector2.ZERO, 0.7)
-	return tween
-
-
-func accelerate_tween() -> Tween:
-	var tween: Tween = create_tween()
-	tween.tween_property(enemy, "velocity", Vector2(speed if !sprite.flip_h else -speed, 0), 1.0)
-	return tween
+# changes speed:
+# for decel -> x < 1 and the smaller the number the quicker the decel
+# for accel -> x > 1 and the greater the number the quicker the accel
+func speed_change(expo_factor: float) -> void:
+	while enemy.velocity.x != 0:
+		checks_normal()
+		var dir: int = 1 if !sprite.flip_h else -1
+		enemy.velocity.x *= expo_factor * _delta * dir
+		
+		if is_equal_approx(enemy.velocity.x, 0):
+			enemy.velocity.x = 0
+			break
+		
+		enemy.move_and_slide()
 
 
 func on_timer_timeout() -> void:
 	match enemy_type:
 		Type.NORMAL:
 			_changing_speed = true
-			await slow_down_tween().finished
+			
+			speed_change(0.9)
 			await get_tree().create_timer(1.0).timeout
-			await accelerate_tween().finished
+			speed_change(1.2)
+			
 			_changing_speed = false
 			_timer_going = false
 
 
-func on_player_attacked(damage: int, dir_x: float) -> void:
+func on_attack_area_entered(_area: Area2D) -> void:
+	SignalManager.enemy_attacked.emit(damage)
+
+
+func on_player_attacked(dmg: int, dir_x: float) -> void:
+	_changing_speed = true
 	timer.stop()
-	lives -= damage
 	enemy.velocity.x += pushback * dir_x
 	enemy.move_and_slide()
+	
+	lives -= dmg
 	if lives <= 0:
 		owner.call_deferred("queue_free")
+	
+	enemy.velocity.x = 0
+	await get_tree().create_timer(1).timeout
+	speed_change(1.2)
+	_changing_speed = false
+	_timer_going = false
