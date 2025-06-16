@@ -1,0 +1,46 @@
+[gd_scene load_steps=6 format=3 uid="uid://dg5r85xqqcpbv"]
+
+[ext_resource type="PackedScene" uid="uid://cc4r23anceyse" path="res://scenes/entities/enemy/BaseEnemy.tscn" id="1_3ws64"]
+[ext_resource type="Script" uid="uid://bnxsk17dfnuu8" path="res://scenes/entities/enemy/NormalEnemy/NormalEnemy.gd" id="2_fsk82"]
+[ext_resource type="Texture2D" uid="uid://b4tfho7p7m7hv" path="res://assets/placeholders/EnemyPlaceholder.png" id="3_fsk82"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_x5tk3"]
+radius = 3.0
+height = 14.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fsk82"]
+size = Vector2(8, 16)
+
+[node name="NormalEnemy" node_paths=PackedStringArray("ray_cast") instance=ExtResource("1_3ws64")]
+collision_layer = 0
+script = ExtResource("2_fsk82")
+ray_cast = NodePath("RayCast2D")
+
+[node name="EnemyComponent" parent="." index="0" node_paths=PackedStringArray("enemy", "sprite", "hit_box", "attack_area", "timer", "visbible_on_screen")]
+enemy = NodePath("..")
+sprite = NodePath("../Sprite2D")
+hit_box = NodePath("../HitBox")
+attack_area = NodePath("../HitBox")
+timer = NodePath("../StopTimer")
+visbible_on_screen = NodePath("../VisibleOnScreenNotifier2D")
+enemy_type = 1
+
+[node name="Sprite2D" parent="." index="1"]
+texture = ExtResource("3_fsk82")
+
+[node name="CollisionShape2D" parent="." index="2"]
+position = Vector2(0, 1)
+shape = SubResource("CapsuleShape2D_x5tk3")
+
+[node name="HitBox" parent="." index="3"]
+collision_layer = 24
+collision_mask = 6
+
+[node name="CollisionShape2D" parent="HitBox" index="0"]
+shape = SubResource("RectangleShape2D_fsk82")
+
+[node name="StopTimer" type="Timer" parent="." index="5"]
+
+[node name="RayCast2D" type="RayCast2D" parent="." index="6"]
+position = Vector2(16, 0)
+target_position = Vector2(0, 30)

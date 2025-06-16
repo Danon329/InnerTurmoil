@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bnaj0hu3vlyri" path="res://assets/placeholders/GrassPlaceholder.png" id="1_7t2t8"]
 [ext_resource type="PackedScene" uid="uid://djtd3620k7qxf" path="res://scenes/entities/player/Player.tscn" id="2_8e8wr"]
-[ext_resource type="PackedScene" uid="uid://dutxy6anu8tj" path="res://scenes/entities/enemy/normal/EnemyNormal.tscn" id="3_agu12"]
+[ext_resource type="PackedScene" uid="uid://bcm1m0n2l1e0k" path="res://scenes/entities/enemy/AggressiveEnemy/AggressiveEnemy.tscn" id="3_agu12"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8e8wr"]
 texture = ExtResource("1_7t2t8")
@@ -23,5 +23,5 @@ tile_set = SubResource("TileSet_agu12")
 [node name="Player" parent="." instance=ExtResource("2_8e8wr")]
 position = Vector2(34, -25)
 
-[node name="EnemyNormal" parent="." instance=ExtResource("3_agu12")]
-position = Vector2(107, -15)
+[node name="AggressiveEnemy" parent="." instance=ExtResource("3_agu12")]
+position = Vector2(111, -9)

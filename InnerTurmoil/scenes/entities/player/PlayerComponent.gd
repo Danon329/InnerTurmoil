@@ -103,7 +103,6 @@ func fall_out_of_bounds() -> void:
 func attack_input() -> void:
 	if _attackable and Input.is_action_just_pressed("attack"):
 		SignalManager.player_attacked.emit(damage, 1 if !sprite.flip_h else -1)
-		print("Attack")
 		# player.velocity.x = pushback if sprite.flip_h else -pushback
 
 
