@@ -29,6 +29,7 @@ sprite = NodePath("../Sprite2D")
 hit_box = NodePath("../HitBox")
 attack_area = NodePath("../SwordArea")
 invincibility_timer = NodePath("../InvicibilityTimer")
+lives = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_tlaso")

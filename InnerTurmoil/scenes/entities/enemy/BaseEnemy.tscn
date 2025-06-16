@@ -8,6 +8,7 @@ script = ExtResource("1_b50xv")
 enemy_component = NodePath("EnemyComponent")
 
 [node name="EnemyComponent" parent="." instance=ExtResource("1_rrfpu")]
+lives = 6
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 

@@ -44,6 +44,8 @@ func _ready() -> void:
 	invincibility_timer.timeout.connect(on_invincibility_timer_timeout)
 	call_deferred("deferred_signals")
 	
+	SignalManager.player_lives.emit(lives)
+	
 	_attack_area_position = attack_area.position.x
 
 
@@ -108,7 +110,7 @@ func attack_input() -> void:
 
 func take_damage(damage: int) -> void:
 	lives -= damage
-	print(lives)
+	SignalManager.player_lives.emit(lives)
 	
 	if lives <= 0:
 		owner.call_deferred("queue_free")

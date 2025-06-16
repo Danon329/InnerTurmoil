@@ -1,8 +1,7 @@
 [gd_scene load_steps=6 format=4 uid="uid://bq4btdnfcke1k"]
 
+[ext_resource type="Script" uid="uid://bb25tv6tftjbw" path="res://scenes/levels/BaseScene.gd" id="1_7dod5"]
 [ext_resource type="Texture2D" uid="uid://bnaj0hu3vlyri" path="res://assets/placeholders/GrassPlaceholder.png" id="1_7t2t8"]
-[ext_resource type="PackedScene" uid="uid://djtd3620k7qxf" path="res://scenes/entities/player/Player.tscn" id="2_8e8wr"]
-[ext_resource type="PackedScene" uid="uid://bcm1m0n2l1e0k" path="res://scenes/entities/enemy/AggressiveEnemy/AggressiveEnemy.tscn" id="3_agu12"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8e8wr"]
 texture = ExtResource("1_7t2t8")
@@ -14,14 +13,92 @@ physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 0
 sources/1 = SubResource("TileSetAtlasSource_8e8wr")
 
+[sub_resource type="LabelSettings" id="LabelSettings_8e8wr"]
+font_size = 34
+
 [node name="BaseScene" type="Node"]
+script = ExtResource("1_7dod5")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
-tile_map_data = PackedByteArray("AAAAAAAAAQAAAAAAAAABAAAAAQAAAAAAAAACAAAAAQAAAAAAAAADAAAAAQAAAAAAAAAEAAAAAQAAAAAAAAAFAAAAAQAAAAAAAAAGAAAAAQAAAAAAAAAHAAAAAQAAAAAAAAAIAAAAAQAAAAAAAAAJAAAAAQAAAAAAAAAKAAAAAQAAAAAAAAALAAAAAQAAAAAAAAAMAAAAAQAAAAAAAAANAAAAAQAAAAAAAAAOAAAAAQAAAAAAAAAPAAAAAQAAAAAAAAAQAAAAAQAAAAAAAAARAAAAAQAAAAAAAAASAAAAAQAAAAAAAAATAAAAAQAAAAAAAAAUAAAAAQAAAAAAAAAVAAAAAQAAAAAAAAAWAAAAAQAAAAAAAAAXAAAAAQAAAAAAAAAYAAAAAQAAAAAAAAAZAAAAAQAAAAAAAAAaAAAAAQAAAAAAAAAbAAAAAQAAAAAAAAAcAAAAAQAAAAAAAAAdAAAAAQAAAAAAAAAeAAAAAQAAAAAAAAAkAAAAAQAAAAAAAAAjAAAAAQAAAAAAAAAiAAAAAQAAAAAAAAAhAAAAAQAAAAAAAAAgAAAAAQAAAAAAAAAfAAAAAQAAAAAAAAAtAAAAAQAAAAAAAAAsAAAAAQAAAAAAAAArAAAAAQAAAAAAAAAqAAAAAQAAAAAAAAApAAAAAQAAAAAAAAAoAAAAAQAAAAAAAAAnAAAAAQAAAAAAAAAmAAAAAQAAAAAAAAAlAAAAAQAAAAAAAAA0AAAAAQAAAAAAAAAzAAAAAQAAAAAAAAAyAAAAAQAAAAAAAAAxAAAAAQAAAAAAAAAwAAAAAQAAAAAAAAAvAAAAAQAAAAAAAAAuAAAAAQAAAAAAAAAXAP7/AQAAAAAAAAAYAP7/AQAAAAAAAAAZAP7/AQAAAAAAAAAaAP7/AQAAAAAAAAAbAP7/AQAAAAAAAAAcAP7/AQAAAAAAAAAdAPz/AQAAAAAAAAAeAPz/AQAAAAAAAAAfAPz/AQAAAAAAAAAgAPz/AQAAAAAAAAAhAPz/AQAAAAAAAAAiAPz/AQAAAAAAAAAjAPz/AQAAAAAAAAApAPr/AQAAAAAAAAAoAPr/AQAAAAAAAAAnAPr/AQAAAAAAAAAmAPr/AQAAAAAAAAAlAPr/AQAAAAAAAAAqAPj/AQAAAAAAAAArAPj/AQAAAAAAAAAsAPj/AQAAAAAAAAAtAPj/AQAAAAAAAAAuAPj/AQAAAAAAAAAvAPj/AQAAAAAAAAAOAP7/AQAAAAAAAAAOAP//AQAAAAAAAAA=")
+tile_map_data = PackedByteArray("AAAAAAAAAQAAAAAAAAABAAAAAQAAAAAAAAACAAAAAQAAAAAAAAADAAAAAQAAAAAAAAAEAAAAAQAAAAAAAAAFAAAAAQAAAAAAAAAGAAAAAQAAAAAAAAAHAAAAAQAAAAAAAAAIAAAAAQAAAAAAAAAJAAAAAQAAAAAAAAAKAAAAAQAAAAAAAAALAAAAAQAAAAAAAAAMAAAAAQAAAAAAAAANAAAAAQAAAAAAAAAOAAAAAQAAAAAAAAAPAAAAAQAAAAAAAAAQAAAAAQAAAAAAAAARAAAAAQAAAAAAAAASAAAAAQAAAAAAAAATAAAAAQAAAAAAAAAUAAAAAQAAAAAAAAAVAAAAAQAAAAAAAAAWAAAAAQAAAAAAAAAXAAAAAQAAAAAAAAAYAAAAAQAAAAAAAAAZAAAAAQAAAAAAAAAaAAAAAQAAAAAAAAAbAAAAAQAAAAAAAAAcAAAAAQAAAAAAAAAdAAAAAQAAAAAAAAAeAAAAAQAAAAAAAAAkAAAAAQAAAAAAAAAjAAAAAQAAAAAAAAAiAAAAAQAAAAAAAAAhAAAAAQAAAAAAAAAgAAAAAQAAAAAAAAAfAAAAAQAAAAAAAAAtAAAAAQAAAAAAAAAsAAAAAQAAAAAAAAArAAAAAQAAAAAAAAAqAAAAAQAAAAAAAAApAAAAAQAAAAAAAAAoAAAAAQAAAAAAAAAnAAAAAQAAAAAAAAAmAAAAAQAAAAAAAAAlAAAAAQAAAAAAAAA0AAAAAQAAAAAAAAAzAAAAAQAAAAAAAAAyAAAAAQAAAAAAAAAxAAAAAQAAAAAAAAAwAAAAAQAAAAAAAAAvAAAAAQAAAAAAAAAuAAAAAQAAAAAAAAASAP//AQAAAAAAAAASAP7/AQAAAAAAAAAjAP//AQAAAAAAAAAjAP7/AQAAAAAAAAA=")
 tile_set = SubResource("TileSet_agu12")
 
-[node name="Player" parent="." instance=ExtResource("2_8e8wr")]
-position = Vector2(34, -25)
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="AggressiveEnemy" parent="." instance=ExtResource("3_agu12")]
-position = Vector2(111, -9)
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="PlayerLives" type="Label" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Lives: 0"
+label_settings = SubResource("LabelSettings_8e8wr")
+
+[node name="Control" type="Control" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_constants/separation = 12
+
+[node name="Player" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Spawn Player"
+
+[node name="Normal" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Spawn Normal Enemy"
+
+[node name="Aggressive" type="Button" parent="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Spawn Aggressive Enemy"
+
+[node name="Labels" type="Node" parent="."]
+
+[node name="Label" type="Label" parent="Labels"]
+offset_left = 54.0
+offset_top = -67.0
+offset_right = 169.0
+offset_bottom = -44.0
+text = "Normal Enemy"
+
+[node name="Label2" type="Label" parent="Labels"]
+offset_left = 370.0
+offset_top = -60.0
+offset_right = 493.0
+offset_bottom = -37.0
+text = "Spawn Player"
+
+[node name="Label3" type="Label" parent="Labels"]
+offset_left = 648.0
+offset_top = -64.0
+offset_right = 771.0
+offset_bottom = -41.0
+text = "Aggressive Enemy"
+
+[node name="Markers" type="Node" parent="."]
+
+[node name="PlayerMarker" type="Marker2D" parent="Markers"]
+position = Vector2(423, -21)
+
+[node name="NormalMarker" type="Marker2D" parent="Markers"]
+position = Vector2(132, -14)
+
+[node name="AggressiveMarker" type="Marker2D" parent="Markers"]
+position = Vector2(714, -15)
+
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Player" to="." method="_on_player_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Normal" to="." method="_on_normal_pressed"]
+[connection signal="pressed" from="CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Aggressive" to="." method="_on_aggressive_pressed"]

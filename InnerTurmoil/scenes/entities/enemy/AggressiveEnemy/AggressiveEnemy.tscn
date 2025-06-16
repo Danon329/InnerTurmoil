@@ -21,7 +21,7 @@ player_ray = NodePath("PlayerRayCast")
 enemy = NodePath("..")
 sprite = NodePath("../Sprite2D")
 hit_box = NodePath("../HitBox")
-attack_area = NodePath("../HitBox")
+attack_area = NodePath("../AttackArea")
 timer = NodePath("../Timer")
 visbible_on_screen = NodePath("../VisibleOnScreenNotifier2D")
 enemy_type = 2
@@ -34,21 +34,27 @@ position = Vector2(0, 1)
 shape = SubResource("CapsuleShape2D_oc24y")
 
 [node name="HitBox" parent="." index="3"]
-collision_layer = 24
-collision_mask = 6
+collision_layer = 8
+collision_mask = 4
 
 [node name="CollisionShape2D" parent="HitBox" index="0"]
 shape = SubResource("RectangleShape2D_vrc7y")
 
-[node name="RayCast2D" type="RayCast2D" parent="." index="5"]
-position = Vector2(17, 0)
-target_position = Vector2(0, 30)
+[node name="AttackArea" type="Area2D" parent="." index="5"]
+collision_layer = 16
+collision_mask = 2
 
-[node name="PlayerRayCast" type="RayCast2D" parent="." index="6"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea" index="0"]
+shape = SubResource("RectangleShape2D_vrc7y")
+
+[node name="RayCast2D" type="RayCast2D" parent="." index="6"]
+position = Vector2(17, 0)
+
+[node name="PlayerRayCast" type="RayCast2D" parent="." index="7"]
 rotation = -1.5708
-target_position = Vector2(0, 100)
+target_position = Vector2(0, 75)
 collision_mask = 2
 collide_with_areas = true
 collide_with_bodies = false
 
-[node name="Timer" type="Timer" parent="." index="7"]
+[node name="Timer" type="Timer" parent="." index="8"]

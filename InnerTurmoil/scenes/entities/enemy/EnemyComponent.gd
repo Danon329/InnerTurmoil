@@ -24,7 +24,7 @@ enum Type {
 @export var damage: int = 1
 @export var walk: float = 50.0
 @export var run: float = 150.0
-@export var jump: float = -200.0
+@export var jump: float = -150.0
 @export var pushback: float = 3000.0
 
 const GRAVITY: float = 400.0
@@ -35,8 +35,11 @@ var _changing_speed: bool = false
 var _speed_change_finished: bool = true
 var _visible: bool = false
 var _running: bool = false
+var _in_air: bool = false
 
 var _delta: float
+
+var _jump_back: float = 75.0
 
 func _ready() -> void:
 	timer.timeout.connect(on_timer_timeout)
@@ -65,17 +68,24 @@ func process_body(delta: float) -> void:
 			pass
 		Type.BOSS:
 			pass
+	
+	
+	if enemy.velocity.y >= MAX_FALL:
+		enemy.call_deferred("queue_free")
 
 
 func physics_normal(delta: float) -> void:
 	if !enemy.is_on_floor():
+		_in_air = true
 		enemy.velocity.y += GRAVITY * delta
+	else:
+		_in_air = false
 	
 	logic_normal()
 
 
 func logic_normal() -> void:
-	if !_changing_speed:
+	if !_changing_speed and !_in_air:
 		enemy.velocity.x = walk if !sprite.flip_h else -walk
 	
 	if !_timer_going:
@@ -84,7 +94,7 @@ func logic_normal() -> void:
 
 
 func checks_normal() -> void:
-	if enemy.is_on_wall() or !enemy.ray_cast.is_colliding():
+	if (enemy.is_on_wall() or !enemy.ray_cast.is_colliding()) and !_in_air:
 		sprite.flip_h = !sprite.flip_h
 		enemy.ray_cast.position.x = -enemy.ray_cast.position.x
 		match enemy_type:
@@ -93,12 +103,12 @@ func checks_normal() -> void:
 
 
 func player_in_range() -> void:
-	if enemy.player_ray.is_colliding() and !_running:
+	if enemy.player_ray.is_colliding() and !_running and !_in_air:
 		_changing_speed = true
 		_running = true
 		speed_change(1.1, run)
 	
-	if !enemy.player_ray.is_colliding() and _running:
+	if !enemy.player_ray.is_colliding() and _running and !_in_air:
 		_running = false
 		speed_change(0.9, walk)
 		_changing_speed = false
@@ -108,6 +118,8 @@ func player_in_range() -> void:
 # for decel -> x < 1 and the smaller the number the quicker the decel
 # for accel -> x > 1 and the greater the number the quicker the accel
 func speed_change(expo_factor: float, speed: float) -> void:
+	if _in_air: return
+	
 	_speed_change_finished = false
 	
 	while !_speed_change_finished:
@@ -143,6 +155,25 @@ func on_timer_timeout() -> void:
 
 func on_attack_area_entered(_area: Area2D) -> void:
 	SignalManager.enemy_attacked.emit(damage)
+	
+	
+	match enemy_type:
+		Type.AGGRESSIVE:
+			if _running:
+				_changing_speed = true
+				_running = false
+				enemy.velocity *= Vector2.ZERO
+				enemy.move_and_slide()
+				
+				var dir_x = 1 if sprite.flip_h else -1
+				var jump_back_x = _jump_back * dir_x
+				enemy.velocity = Vector2(jump_back_x, jump)
+				enemy.move_and_slide()
+				_in_air = true
+				_timer_going = false
+				_changing_speed = false
+			
+			
 
 
 func on_player_attacked(dmg: int, dir_x: float) -> void:
@@ -163,11 +194,11 @@ func on_player_attacked(dmg: int, dir_x: float) -> void:
 	enemy.velocity.x = 0
 	await get_tree().create_timer(1).timeout
 	
-	if enemy_type == Type.AGGRESSIVE:
+	if enemy_type == Type.AGGRESSIVE and !_in_air:
 		enemy.player_ray.enabled = true
 		player_in_range()
 	
-	if !_running:
+	if !_running and !_in_air:
 		speed_change(1.2, walk)
 		_changing_speed = false
 		_timer_going = false
